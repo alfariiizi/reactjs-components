@@ -12,6 +12,7 @@ const config = {
     "plugin:storybook/recommended",
   ],
   rules: {
+    "@typescript-eslint/prefer-nullish-coalescing": "off",
     "react/no-unescaped-entities": "off",
     "@typescript-eslint/array-type": "off",
     "@typescript-eslint/consistent-type-definitions": "off",
@@ -40,4 +41,3 @@ const config = {
   },
 };
 module.exports = config;
-
