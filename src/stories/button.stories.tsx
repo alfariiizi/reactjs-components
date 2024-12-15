@@ -1,4 +1,4 @@
-import { Button } from "@/components/button";
+import { Button } from "@/components/ui/button";
 import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "@storybook/test";
 import { LayoutDashboard } from "lucide-react";
@@ -17,6 +17,16 @@ const meta = {
     isLoading: false,
     // Use `fn` to spy on the onClick arg, which will appear in the actions panel once invoked: https://storybook.js.org/docs/essentials/actions#action-args
     onClick: fn(),
+  },
+  argTypes: {
+    variant: {
+      options: ["default", "secondary", "outline"],
+      control: { type: "select" },
+    },
+    size: {
+      options: ["default", "sm", "lg"],
+      control: { type: "select" },
+    },
   },
 } satisfies Meta<typeof Button>;
 

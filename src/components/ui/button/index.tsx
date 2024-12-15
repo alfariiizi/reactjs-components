@@ -35,9 +35,7 @@ const buttonVariants = cva(
   },
 );
 
-export interface ButtonProps
-  extends React.ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+type ButtonCoreProps = VariantProps<typeof buttonVariants> & {
   asChild?: boolean;
   icon?: React.ReactNode;
   iconPosition?: "start" | "end";
@@ -45,7 +43,20 @@ export interface ButtonProps
   loaderClassName?: string;
   hideIconOnLoading?: boolean;
   isNotif?: boolean;
-}
+};
+
+export type ButtonProps = React.ButtonHTMLAttributes<HTMLButtonElement> &
+  ButtonCoreProps;
+
+// const defaultValue: Required<ButtonCoreProps = {
+//   variant: "default",
+//   size: "default",
+//   iconPosition: "start",
+//   isLoading: false,
+//   hideIconOnLoading: true,
+//   asChild: false,
+//   isNotif: false,
+// }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
