@@ -48,18 +48,29 @@ type InputType =
   | "file"
   | "color";
 
-type InputValue<T extends InputType> = T extends "number"
-  ? number
-  : T extends "file"
+type InputValue<
+  T extends InputType,
+  M extends boolean | undefined,
+> = T extends "file"
+  ? M extends true
     ? FileList | null
+    : File | null
+  : T extends "number"
+    ? number | undefined
     : string;
 
-export interface InputProps<T extends InputType = "text">
-  extends Omit<React.InputHTMLAttributes<HTMLInputElement>, "type" | "value">,
+export interface InputProps<
+  T extends InputType = "text",
+  M extends boolean | undefined = undefined,
+> extends Omit<
+      React.InputHTMLAttributes<HTMLInputElement>,
+      "type" | "value" | "multiple"
+    >,
     VariantProps<typeof inputVariants> {
   type?: T;
-  value?: InputValue<T>;
-  onValueChange?: (value: InputValue<T>) => void;
+  multiple?: M;
+  value?: InputValue<T, M>;
+  onValueChange?: (value: InputValue<T, M>) => void;
   containerClassName?: string;
   startAdornment?: React.ReactNode;
   endAdornment?: React.ReactNode;
@@ -67,8 +78,12 @@ export interface InputProps<T extends InputType = "text">
   endAdornmentClassName?: string;
 }
 
-const Input = <T extends InputType = "text">(
+const Input = <
+  T extends InputType = "text",
+  M extends boolean | undefined = undefined,
+>(
   {
+    multiple,
     className,
     containerClassName,
     rounded,
@@ -82,20 +97,25 @@ const Input = <T extends InputType = "text">(
     startAdornmentClassName,
     endAdornmentClassName,
     ...props
-  }: InputProps<T>,
+  }: InputProps<T, M>,
   ref: React.Ref<HTMLInputElement>,
 ) => {
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (type === "file") {
-      onValueChange?.(event.target.files as InputValue<T>);
+      if (multiple) {
+        onValueChange?.(event.target.files as InputValue<T, M>);
+      } else {
+        const file = event.target.files?.[0] || null;
+        onValueChange?.(file as InputValue<T, M>);
+      }
     } else if (type === "number") {
       const parsedValue =
         event.target.value === ""
           ? (undefined as any)
           : Number(event.target.value);
-      onValueChange?.(parsedValue as InputValue<typeof type>);
+      onValueChange?.(parsedValue as InputValue<T, M>);
     } else {
-      onValueChange?.(event.target.value as InputValue<T>);
+      onValueChange?.(event.target.value as InputValue<T, M>);
     }
   };
 

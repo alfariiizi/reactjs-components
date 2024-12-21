@@ -1,5 +1,7 @@
 import { Input } from "@/components/ui/input";
+import { InputFile } from "@/components/ui/input-file";
 import { InputPassword } from "@/components/ui/input-password";
+import { delay } from "@/lib/utils";
 import type { Meta, StoryObj } from "@storybook/react";
 import { fn } from "@storybook/test";
 import { useState } from "react";
@@ -22,6 +24,14 @@ type Story = StoryObj<typeof meta>;
 
 export const Default: Story = {
   args: {},
+};
+
+export const Variant: Story = {
+  args: {
+    type: "number",
+    variant: "underlined",
+    endAdornment: "cm",
+  },
 };
 
 export const Placeholder: Story = {
@@ -75,10 +85,15 @@ export const Password: Story = {
   },
 };
 
-export const Variant: Story = {
-  args: {
-    type: "number",
-    variant: "underlined",
-    endAdornment: "cm",
+export const File: Story = {
+  render: () => {
+    return (
+      <InputFile
+        onFileUpload={async () => {
+          await delay(10000);
+        }}
+        fileValidation={() => true}
+      />
+    );
   },
 };
