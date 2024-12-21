@@ -74,3 +74,11 @@ export const Password: Story = {
     );
   },
 };
+
+export const Variant: Story = {
+  args: {
+    type: "number",
+    variant: "underlined",
+    endAdornment: "cm",
+  },
+};

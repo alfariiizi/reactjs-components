@@ -17,7 +17,7 @@ export const inputVariants = cva(
       },
       variant: {
         outline:
-          "border-borde focus-within:border-primary focus-within:shadow-[0_0px_0px_1px_hsl(var(--primary))] aria-invalid:border-transparent",
+          "border-border focus-within:border-primary focus-within:shadow-[0_0px_0px_1px_hsl(var(--primary))] aria-invalid:border-transparent",
         filled:
           "border-2 bg-background focus-within:border-primary focus-within:bg-transparent",
         underlined:
