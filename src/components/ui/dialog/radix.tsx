@@ -20,13 +20,15 @@ const DialogOverlay = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Overlay>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Overlay> & {
     isOverflow: boolean;
+    isBlur?: boolean;
   }
->(({ className, isOverflow, ...props }, ref) => {
+>(({ className, isOverflow, isBlur, ...props }, ref) => {
   return (
     <DialogPrimitive.Overlay
       ref={ref}
       className={cn(
         "fixed inset-0 z-50 overflow-y-auto bg-black/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+        isBlur && "backdrop-blur-sm",
         isOverflow &&
           "grid place-items-center overflow-auto p-5 transition-opacity duration-300",
         className,
@@ -41,12 +43,13 @@ const DialogContent = React.forwardRef<
   React.ElementRef<typeof DialogPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof DialogPrimitive.Content> & {
     overflow?: DialogOverflowType;
+    isBlur?: boolean;
   }
->(({ className, children, overflow, ...props }, ref) => (
+>(({ className, children, overflow, isBlur, ...props }, ref) => (
   <>
     {overflow !== "overlay" ? (
       <DialogPortal>
-        <DialogOverlay isOverflow={false} />
+        <DialogOverlay isBlur={isBlur} isOverflow={false} />
         <DialogPrimitive.Content
           ref={ref}
           className={cn(
@@ -60,7 +63,7 @@ const DialogContent = React.forwardRef<
       </DialogPortal>
     ) : (
       <DialogPortal>
-        <DialogOverlay isOverflow>
+        <DialogOverlay isBlur={isBlur} isOverflow>
           <DialogPrimitive.Content
             ref={ref}
             className={cn(

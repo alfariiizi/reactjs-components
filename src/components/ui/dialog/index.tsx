@@ -1,3 +1,5 @@
+"use client";
+
 import "./style.css";
 import { cn } from "@/lib/utils";
 import {
@@ -5,19 +7,32 @@ import {
   DialogTitle,
   DialogHeader,
   DialogContent,
-  DialogTrigger,
   DialogDescription,
   DialogClose,
+  DialogTrigger,
 } from "./radix";
 import { X } from "lucide-react";
+import { useState } from "react";
+import assert from "assert";
 
 type DialogProps = {
   overflow?: "overlay" | "children" | "content";
+  isOverlayBlur?: boolean;
   className?: string;
   open?: boolean;
   onOpenChange?: (open: boolean) => void;
-  children: React.ReactNode;
-  trigger?: React.ReactNode;
+  children:
+    | React.ReactNode
+    | ((opts: {
+        open: boolean;
+        onOpenChange: (open: boolean) => void;
+      }) => React.ReactNode);
+  trigger?:
+    | React.ReactNode
+    | ((opts: {
+        open: boolean;
+        onOpenChange: (open: boolean) => void;
+      }) => React.ReactNode);
   triggerClassName?: string;
   headerClassName?: string;
   title?: React.ReactNode;
@@ -31,6 +46,7 @@ type DialogProps = {
 
 export function Dialog({
   overflow = "overlay",
+  isOverlayBlur,
   className,
   open,
   onOpenChange,
@@ -46,19 +62,42 @@ export function Dialog({
   contentClassName,
   closeClassName,
 }: DialogProps) {
+  assert(
+    !(
+      (open !== undefined && onOpenChange === undefined) ||
+      (open === undefined && onOpenChange !== undefined)
+    ),
+    "Both open and onOpenChange must be initialize together",
+  );
+  const [isOpen, setIsOpen] = useState(false);
   return (
-    <DialogRoot open={open} onOpenChange={onOpenChange}>
-      {open !== undefined && onOpenChange !== undefined ? (
-        <div className={cn(triggerClassName)}>{trigger}</div>
+    <DialogRoot open={open ?? isOpen} onOpenChange={onOpenChange ?? setIsOpen}>
+      {typeof trigger === "function" ? (
+        <div className={cn(triggerClassName)}>
+          {trigger({
+            open: open ?? isOpen,
+            onOpenChange: onOpenChange ?? setIsOpen,
+          })}
+        </div>
       ) : (
-        <DialogTrigger className={cn(triggerClassName)} asChild>
+        <DialogTrigger
+          className={cn(triggerClassName)}
+          onClick={() => {
+            if (onOpenChange) {
+              onOpenChange(true);
+            } else {
+              setIsOpen(true);
+            }
+          }}
+        >
           {trigger}
         </DialogTrigger>
       )}
       <DialogContent
+        isBlur={isOverlayBlur}
         overflow={overflow}
         className={cn(
-          "scrollbar-hide p-0",
+          "scrollbar-hide rounded-lg p-0",
           overflow === "content" &&
             "h-full max-h-[calc(100dvh-1.5rem)] w-[calc(100dvw-1.5rem)] overflow-y-auto",
           overflow === "overlay" && "relative",
@@ -86,7 +125,12 @@ export function Dialog({
             className,
           )}
         >
-          {children}
+          {typeof children === "function"
+            ? children({
+                open: open ?? isOpen,
+                onOpenChange: onOpenChange ?? setIsOpen,
+              })
+            : children}
         </div>
         <DialogClose
           className={cn(
