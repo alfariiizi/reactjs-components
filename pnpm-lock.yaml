@@ -8,6 +8,9 @@ importers:
 
   .:
     dependencies:
+      '@alfarizi/convert-to-number':
+        specifier: ^1.0.5
+        version: 1.0.5
       '@hookform/resolvers':
         specifier: ^3.9.1
         version: 3.9.1(react-hook-form@7.54.0(react@18.3.1))
@@ -236,6 +239,9 @@ packages:
 
   '@adobe/css-tools@4.4.1':
     resolution: {integrity: sha512-12WGKBQzjUAI4ayyF4IAtfw2QR/IDoqk6jTddXDhtYTJF9ASmoE1zst7cVtP0aL/F1jUJL5r+JxKXKEgHNbEUQ==}
+
+  '@alfarizi/convert-to-number@1.0.5':
+    resolution: {integrity: sha512-du87KOVLuMHfYZ8/Q6+RSq1pXJSK9o7YvYTAm+T2xaPedgaMCyBJPc8EiUWZcdimJKl3cBGgmkXEmzOC1I0aFA==}
 
   '@alloc/quick-lru@5.2.0':
     resolution: {integrity: sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==}
@@ -5459,6 +5465,8 @@ packages:
 snapshots:
 
   '@adobe/css-tools@4.4.1': {}
+
+  '@alfarizi/convert-to-number@1.0.5': {}
 
   '@alloc/quick-lru@5.2.0': {}
 

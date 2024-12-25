@@ -6,6 +6,7 @@ import * as React from "react";
 
 import { cn } from "@/lib/utils";
 import { type VariantProps, cva } from "class-variance-authority";
+import type * as InputPrimitive from "../input-primitive";
 
 export const inputVariants = cva(
   "flex items-center h-10 w-full text-sm bg-transparent file:border-0 file:text-sm file:font-medium placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 border border-transparent focus-within:outline-none aria-invalid:ring-1 aria-invalid:ring-destructive aria-invalid:focus-within:ring-2 aria-invalid:focus-within:ring-destructive",
@@ -32,45 +33,11 @@ export const inputVariants = cva(
   },
 );
 
-type InputType =
-  | "text"
-  | "password"
-  | "email"
-  | "tel"
-  | "url"
-  | "search"
-  | "number"
-  | "date"
-  | "month"
-  | "week"
-  | "time"
-  | "datetime-local"
-  | "file"
-  | "color";
-
-type InputValue<
-  T extends InputType,
-  M extends boolean | undefined,
-> = T extends "file"
-  ? M extends true
-    ? FileList | null
-    : File | null
-  : T extends "number"
-    ? number | undefined
-    : string;
-
 export interface InputProps<
-  T extends InputType = "text",
+  T extends InputPrimitive.InputType = "text",
   M extends boolean | undefined = undefined,
-> extends Omit<
-      React.InputHTMLAttributes<HTMLInputElement>,
-      "type" | "value" | "multiple"
-    >,
+> extends InputPrimitive.InputProps<T, M>,
     VariantProps<typeof inputVariants> {
-  type?: T;
-  multiple?: M;
-  value?: InputValue<T, M>;
-  onValueChange?: (value: InputValue<T, M>) => void;
   containerClassName?: string;
   startAdornment?: React.ReactNode;
   endAdornment?: React.ReactNode;
@@ -79,19 +46,16 @@ export interface InputProps<
 }
 
 const Input = <
-  T extends InputType = "text",
+  T extends InputPrimitive.InputType = "text",
   M extends boolean | undefined = undefined,
 >(
   {
-    multiple,
     className,
     containerClassName,
     rounded,
     variant,
     type = "text" as T,
     value,
-    onValueChange,
-    onChange,
     startAdornment,
     endAdornment,
     startAdornmentClassName,
@@ -100,25 +64,6 @@ const Input = <
   }: InputProps<T, M>,
   ref: React.Ref<HTMLInputElement>,
 ) => {
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    if (type === "file") {
-      if (multiple) {
-        onValueChange?.(event.target.files as InputValue<T, M>);
-      } else {
-        const file = event.target.files?.[0] || null;
-        onValueChange?.(file as InputValue<T, M>);
-      }
-    } else if (type === "number") {
-      const parsedValue =
-        event.target.value === ""
-          ? (undefined as any)
-          : Number(event.target.value);
-      onValueChange?.(parsedValue as InputValue<T, M>);
-    } else {
-      onValueChange?.(event.target.value as InputValue<T, M>);
-    }
-  };
-
   return (
     <div
       className={cn(
@@ -154,11 +99,6 @@ const Input = <
                 : (value as string)
             : undefined
         }
-        onChange={(e) => {
-          handleChange(e);
-          onChange?.(e);
-        }}
-        {...props}
         className={cn(
           "w-full overflow-clip bg-transparent px-3 py-2 outline-none focus-visible:outline-none",
           {
@@ -167,6 +107,7 @@ const Input = <
           },
           className,
         )}
+        {...props}
       />
       {endAdornment && (
         <div
