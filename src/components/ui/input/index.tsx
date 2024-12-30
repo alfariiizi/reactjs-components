@@ -3,10 +3,9 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 
 import * as React from "react";
-
 import { cn } from "@/lib/utils";
 import { type VariantProps, cva } from "class-variance-authority";
-import type * as InputPrimitive from "../input-primitive";
+import * as InputPrimitive from "../input-primitive";
 
 export const inputVariants = cva(
   "flex items-center h-10 w-full text-sm bg-transparent file:border-0 file:text-sm file:font-medium placeholder:text-muted-foreground disabled:cursor-not-allowed disabled:opacity-50 border border-transparent focus-within:outline-none aria-invalid:ring-1 aria-invalid:ring-destructive aria-invalid:focus-within:ring-2 aria-invalid:focus-within:ring-destructive",
@@ -45,7 +44,7 @@ export interface InputProps<
   endAdornmentClassName?: string;
 }
 
-const Input = <
+const InputComponent = <
   T extends InputPrimitive.InputType = "text",
   M extends boolean | undefined = undefined,
 >(
@@ -54,15 +53,13 @@ const Input = <
     containerClassName,
     rounded,
     variant,
-    type = "text" as T,
-    value,
     startAdornment,
     endAdornment,
     startAdornmentClassName,
     endAdornmentClassName,
     ...props
   }: InputProps<T, M>,
-  ref: React.Ref<HTMLInputElement>,
+  ref: React.ForwardedRef<HTMLInputElement>,
 ) => {
   return (
     <div
@@ -76,7 +73,7 @@ const Input = <
           className={cn(
             "inline-flex h-full items-center text-muted-foreground",
             "py-2 pl-3 pr-1.5",
-            "rounded-l-md has-[+input:focus]:rounded-l-sm has-[+input:focus]:border-l-0", // this must be same with default value of variant
+            "rounded-l-md has-[+input:focus]:rounded-l-sm has-[+input:focus]:border-l-0",
             {
               "rounded-l-md": rounded === "md",
               "rounded-l-none": rounded === "none",
@@ -87,18 +84,8 @@ const Input = <
           {startAdornment}
         </div>
       )}
-      <input
+      <InputPrimitive.Input
         ref={ref}
-        type={type}
-        value={
-          value !== undefined && value !== null
-            ? type === "file"
-              ? undefined
-              : type === "number"
-                ? String(value ?? "")
-                : (value as string)
-            : undefined
-        }
         className={cn(
           "w-full overflow-clip bg-transparent px-3 py-2 outline-none focus-visible:outline-none",
           {
@@ -114,7 +101,7 @@ const Input = <
           className={cn(
             "inline-flex items-center text-muted-foreground",
             "py-2 pl-1.5 pr-3",
-            "rounded-r-md has-[+input:focus]:rounded-r-sm has-[+input:focus]:border-r-0", // this must be same with default value of variant
+            "rounded-r-md has-[+input:focus]:rounded-r-sm has-[+input:focus]:border-r-0",
             {
               "rounded-r-md": rounded === "md",
               "rounded-r-none": rounded === "none",
@@ -129,7 +116,11 @@ const Input = <
   );
 };
 
-Input.displayName = "Input";
+export const Input = React.forwardRef(InputComponent) as <
+  T extends InputPrimitive.InputType = "text",
+  M extends boolean | undefined = undefined,
+>(
+  props: InputProps<T, M> & { ref?: React.ForwardedRef<HTMLInputElement> },
+) => React.ReactElement;
 
-export { Input };
 export default Input;

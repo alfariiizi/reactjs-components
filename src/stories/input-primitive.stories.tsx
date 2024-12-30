@@ -324,3 +324,78 @@ export const InputPassword: Story = {
     );
   },
 };
+
+export const FormExample: Story = {
+  render: (args) => {
+    const [name, setName] = useState<string | undefined>();
+    const [email, setEmail] = useState<string | undefined>();
+    const [address, setAddress] = useState<string | undefined>();
+    const [password, setPassword] = useState<string | undefined>();
+    return (
+      <form
+        onSubmit={(event) => {
+          event.preventDefault();
+          console.log({ name, email, address, password });
+        }}
+      >
+        <div className="grid grid-cols-4 gap-x-10 gap-y-6">
+          <p>Name: </p>
+          <Input
+            {...args}
+            type="text"
+            value={name}
+            onValueChange={(value) => {
+              setName(value);
+            }}
+          />
+          <p>
+            Value: "<span>{name}</span>"
+          </p>
+          <p>Type: {typeof name}</p>
+          <p>Email:</p>
+          <Input
+            {...args}
+            type="email"
+            value={email}
+            onValueChange={(value) => {
+              setEmail(value);
+            }}
+          />
+          <p>
+            Value: "<span>{email}</span>"
+          </p>
+          <p>Type: {typeof email}</p>
+          <p>Address:</p>
+          <Input
+            {...args}
+            type="text"
+            value={address}
+            onValueChange={(value) => {
+              setAddress(value);
+            }}
+          />
+          <p>
+            Value: "<span>{address}</span>"
+          </p>
+          <p>Type: {typeof address}</p>
+          <p>Password:</p>
+          <Input
+            {...args}
+            type="password"
+            value={password}
+            onValueChange={(value) => {
+              setPassword(value);
+            }}
+          />
+          <p>
+            Value: "<span>{password}</span>"
+          </p>
+          <p>Type: {typeof password}</p>
+        </div>
+        <button type="submit" className="">
+          Submit
+        </button>
+      </form>
+    );
+  },
+};
